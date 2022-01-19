@@ -22,14 +22,14 @@ However, we also use the projective coordinates to express a point as ![](http:/
 
 we have that
 
-![](http://latex.codecogs.com/gif.latex?(x,y) => (x,y,1))
+![](http://latex.codecogs.com/gif.latex?(x,y)=>(x,y,1))
 
-![](http://latex.codecogs.com/gif.latex?(X/Z,y/Z) <= (X,Y,Z))
+![](http://latex.codecogs.com/gif.latex?(X/Z,y/Z)<=(X,Y,Z))
 
 In affine coordinates, every addition/double on elliptic curve need a division, but no division in projective coordinates. so we always use projective coordinates to calculate the multiplication, and use affine coordinates to express a point.
 
 In addition, we have Jacobi projective coordinates ![](http://latex.codecogs.com/gif.latex?(X,Y,Z)):
 
-![](http://latex.codecogs.com/gif.latex?(x,y) => (x,y,1))
+![](http://latex.codecogs.com/gif.latex?(x,y)=>(x,y,1))
 
-![](http://latex.codecogs.com/gif.latex?(X/Z^2,Y/Z^3) <= (X,Y,Z))
+![](http://latex.codecogs.com/gif.latex?(X/Z^2,Y/Z^3)<=(X,Y,Z))
