@@ -33,3 +33,8 @@ In addition, we have Jacobi projective coordinates ![](http://latex.codecogs.com
 ![](http://latex.codecogs.com/gif.latex?(x,y)=>(x,y,1))
 
 ![](http://latex.codecogs.com/gif.latex?(X/Z^2,Y/Z^3)<=(X,Y,Z))
+
+###ECDSA-Verify in Projective coordinates
+For a signature  ![](http://latex.codecogs.com/gif.latex?(r,s)), pubkey ![](http://latex.codecogs.com/gif.latex?P), base point ![](http://latex.codecogs.com/gif.latex?G)  and msg hash ![](http://latex.codecogs.com/gif.latex?m), we have to verify that: ![](http://latex.codecogs.com/gif.latex?(x,y,z)=sG+mP) and if ![](http://latex.codecogs.com/gif.latex?r*z=x)
+
+In this form, we avoid division method.
