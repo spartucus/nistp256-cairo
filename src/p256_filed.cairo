@@ -31,12 +31,6 @@ func sub_inner{range_check_ptr}(l0, l1, l2, l3, l4, r0, r1, r2, r3, r4) -> (res:
     borrow=borrow)
 end
 
-# Returns `fe^by`, where `by` is a little-endian integer exponent.
-func pow_vartime(fe: BigInt4, by: felt*) -> (res: BigInt4):
-    let (one) = bigint_one()
-    
-end
-
 # Montgomery Reduction
 # The general algorithm is:
     # ```text
@@ -148,11 +142,34 @@ func mul{range_check_ptr}(lhs: BigInt4, rhs: BigInt4) -> (res: BigInt4):
     return (res=res)
 end
 
-# Returns the multiplication of fe, if it is non-zero.
-func invert{range_check_ptr}(fe: BigInt4) -> (res: BigInt4):
-    # Make sure fe is non-zero
+# Returns 1 if fe == 0 (mod secp256r1_prime), and 0 otherwise.
+func is_zero{range_check_ptr}(fe : BigInt3) -> (res : felt):
     let (zero) = bigint_zero()
-    assert (fe != zero)
+    alloc_locals
+    local res
+    if zero == fe:
+        let res = 1
+    else:
+        let res = 0
+    end
 
+    return (res)
+end
 
+# Translate a field element out of the Montgomery domain.
+func to_canonical{range_check_ptr}(fe: BigInt4) -> (res: BigInt4):
+    let (res) = montgomery_reduce(fe.d0, fe.d1, fe.d2, fe.d3, 0, 0, 0, 0)
+end
+
+# Translate a field element into the Montgomery domain.
+func to_montgomery{range_check_ptr}(fe: BigInt4) -> (res: BigInt4):
+    let R2 = BigInt4(
+        d0=0x0000000000000003,
+        d1=0xfffffffbffffffff,
+        d2=0xfffffffffffffffe,
+        d3=0x00000004fffffffd
+    )
+
+    let (res) = mul(fe, R2)
+    return (res=res)
 end
