@@ -1,0 +1,25 @@
+#todo
+#identity of the group: the point at infinity.
+func IDENTITY() -> (EcPoint):
+end
+
+#todo
+#Base point of P-256.
+func GENERATOR() -> (EcPoint):
+end
+
+#todo
+#res = a + b
+#we ignore add_mix function, which is designed for (projective point + affine point)
+func add(a: EcPoint, b: EcPoint) -> (res: EcPoint):
+end
+
+#todo
+#res = a + a
+func double(a: EcPoint) -> (res: EcPoint):
+end
+
+#todo
+#res= [k]a
+func mul(a:EcPoint, k: BigInt4) -> (res: EcPoint):
+end
