@@ -48,3 +48,15 @@ func MODULUS() -> (res: BigInt4):
         d3=0xffffffff00000001,
         ))
 end
+
+# b = 0x5AC635D8AA3A93E7B3EBBD55769886BC651D06B0CC53B0F63BCE3C3E27D2604B
+func CURVE_EQUATION_B() -> (BigInt4):
+    return (
+        BigInt4(
+        d0=0xd89cdf6229c4bddf,
+        d1=0xacf005cd78843090,
+        d2=0xe5a220abf7212ed6,
+        d3=0xdc30061d04874834
+        )
+    )
+end

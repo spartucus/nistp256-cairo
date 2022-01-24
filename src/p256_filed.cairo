@@ -12,10 +12,10 @@ func sub_inner{range_check_ptr}(l0, l1, l2, l3, l4, r0, r1, r2, r3, r4) -> (res:
     let (w4, borrow) = sbb(l4, r4, borrow)
 
     let (MODULUS) = MODULUS()
-    let (ba0) = bitwise_and(MODULUS[0], borrow)
-    let (ba1) = bitwise_and(MODULUS[1], borrow)
-    let (ba2) = bitwise_and(MODULUS[2], borrow)
-    let (ba3) = bitwise_and(MODULUS[3], borrow)
+    let (ba0) = bitwise_and(MODULUS.d0, borrow)
+    let (ba1) = bitwise_and(MODULUS.d1, borrow)
+    let (ba2) = bitwise_and(MODULUS.d2, borrow)
+    let (ba3) = bitwise_and(MODULUS.d3, borrow)
     let (w0, carry) = adc(w0, ba0, 0);
     let (w1, carry) = adc(w1, ba1, carry);
     let (w2, carry) = adc(w2, ba2, carry);
@@ -71,27 +71,27 @@ end
     #   https://csrc.nist.gov/csrc/media/events/workshop-on-elliptic-curve-cryptography-standards/documents/papers/session6-adalier-mehmet.pdf
 func montgomery_reduce{range_check_ptr}(r0, r1, r2, r3, r4, r5, r6, r7) -> (res: BigInt4):
     let (MODULUS) = MODULUS()
-    let (r1, carry) = mac(r1, r0, MODULUS[1], r0)
+    let (r1, carry) = mac(r1, r0, MODULUS.d1, r0)
     let (r2, carry) = adc(r2, 0, carry)
-    let (r3, carry) = mac(r3, r0, MODULUS[3], carry)
+    let (r3, carry) = mac(r3, r0, MODULUS.d3, carry)
     let (r4, carry2) = adc(r4, 0, carry)
 
-    let (r2, carry) = mac(r2, r1, MODULUS[1], r1)
+    let (r2, carry) = mac(r2, r1, MODULUS.d1, r1)
     let (r3, carry) = adc(r3, 0, carry)
-    let (r4, carry) = mac(r4, r1, MODULUS[3], carry)
+    let (r4, carry) = mac(r4, r1, MODULUS.d3, carry)
     let (r5, carry2) = adc(r5, carry2, carry)
 
-    let (r3, carry) = mac(r3, r2, MODULUS[1], r2)
+    let (r3, carry) = mac(r3, r2, MODULUS.d1, r2)
     let (r4, carry) = adc(r4, 0, carry)
-    let (r5, carry) = mac(r5, r2, MODULUS[3], carry)
+    let (r5, carry) = mac(r5, r2, MODULUS.d3, carry)
     let (r6, carry2) = adc(r6, carry2, carry)
 
-    let (r4, carry) = mac(r4, r3, MODULUS[1], r3)
+    let (r4, carry) = mac(r4, r3, MODULUS.d1, r3)
     let (r5, carry) = adc(r5, 0, carry)
-    let (r6, carry) = mac(r6, r3, MODULUS[3], carry)
+    let (r6, carry) = mac(r6, r3, MODULUS.d3, carry)
     let (r7, r8) = adc(r7, carry2, carry)
 
-    let (res, borrow) = sub_inner(r4, r5, r6, r7, r8, MODULUS[0], MODULUS[1], MODULUS[2], MODULUS[3], 0)
+    let (res, borrow) = sub_inner(r4, r5, r6, r7, r8, MODULUS[0], MODULUS.d1, MODULUS[2], MODULUS.d3, 0)
     return (res=res)
 end
 
@@ -105,7 +105,7 @@ func add{range_check_ptr}(lhs: BigInt4, rhs: BigInt4) -> (res: BigInt4):
     let (w3, w4) = adc(lhs.d3, rhs.d3, carry)
 
     # Attempt to subtract the modulus, to ensure the result is in the field.
-    let (res, borrow) = sub_inner(w0, w1, w2, w3, w4, MODULUS[0], MODULUS[1], MODULUS[2], MODULUS[3], 0)
+    let (res, borrow) = sub_inner(w0, w1, w2, w3, w4, MODULUS.d0, MODULUS.d1, MODULUS.d2, MODULUS.d3, 0)
     return (res=res)
 end
 
