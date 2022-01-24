@@ -9,6 +9,11 @@ func GENERATOR() -> (EcPoint):
 end
 
 #todo
+#res = 1 if a is an infinity point
+func is_identity(a: EcPoint) -> (res: felt):
+end
+
+#todo
 #res = a + b
 #we ignore add_mix function, which is designed for (projective point + affine point)
 func add(a: EcPoint, b: EcPoint) -> (res: EcPoint):

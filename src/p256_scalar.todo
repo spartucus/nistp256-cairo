@@ -1,0 +1,27 @@
+#todo
+# Verifies that val is in the range [1, N).
+func validate_signature_entry{range_check_ptr}(val : BigIntN):
+
+# Computes x * s^(-1) modulo the size of the elliptic curve (N).
+#Please refer to the secp256k1.cairo(secp.cairo) for implementation
+func mul_s_inv{range_check_ptr}(x : BigInt4, s : BigInt4) -> (res : BigInt4):
+
+
+
+##todo
+##please donot do it this time, unless we can't implement the above function
+##todo
+##return a^-1 mod n, where n is the order of ec
+func invert_vartime(a: BigInt4) -> (BigInt4):
+end
+
+##todo
+##this is used in invert_vartime
+FRAC_MODULUS_2  : MODULUS >> 1
+
+##return a*b mod n
+func mul(a: BigInt4, b: BigInt4) -> (BigInt4)
+
+##return a + b*2^256 mod n
+func barrett_reduce(a: BigInt4, b:BigInt4) -> (BigInt4)
+
