@@ -1,6 +1,16 @@
 #TODO
 # Returns 1 if x == 0 (mod secp256k1_prime), and 0 otherwise.
-func is_zero{range_check_ptr}(x : BigInt3) -> (res : felt):
+func is_zero{range_check_ptr}(x : BigInt4) -> (res : felt):
+end
+
+#TODO
+#return res = x^2 mod p
+func square{range_check_ptr}(x: BigInt4) -> (res: BigInt4):
+end
+
+#TODO
+#return res = 2x mod p
+func double{range_check_ptr}(x: BigInt4) -> (res: BigInt4):
 end
 
 #TODO
