@@ -166,4 +166,45 @@ end
 # Returns `[k] a`.
 func mul(a:EcPoint, k: BigInt4) -> (res: EcPoint):
     let (IDENTITY) = IDENTITY()
+
+    let (b) = mul_inner(IDENTITY, a, k.d3, 63)
+    let (b) = mul_inner(b, a, k.d2, 63)
+    let (b) = mul_inner(b, a, k.d1, 63)
+    let (b) = mul_inner(b, a, k.d0, 63)
+
+    return (res=b)
+end
+
+func mul_inner{range_check_ptr, bitwise_ptr:BitwiseBuiltin*}(a: EcPoint, b: EcPoint, limb: felt, size: felt) -> (EcPoint):
+    if size == -1:
+        return (a)
+    end
+
+    let (a) = double(a)
+    let (ls) = limb/(2**size)
+    alloc_locals
+    local res
+    let (choice) = bitwise_and(ls, 1)
+    if choice == 0:
+        let res = a
+    else:
+        let (res) = add(a, b)
+    end
+
+    let (res) = mul_inner(res, b, limb, size=size-1)
+    return (res)
+end
+
+# Return 1 if a is an infinity point
+func is_identity(a: EcPoint) -> (felt):
+    let (IDENTITY) = IDENTITY()
+    alloc_locals
+    local res
+    if IDENTITY == a:
+        let res = 1
+    else:
+        let res = 0
+    end
+
+    return (res)
 end
