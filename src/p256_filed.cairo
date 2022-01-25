@@ -110,13 +110,13 @@ func add{range_check_ptr,bitwise_ptr:BitwiseBuiltin*}(lhs: BigInt4, rhs: BigInt4
 end
 
 # Returns lhs - rhs mod p
-func sub{range_check_ptr}(lhs: BigInt4, rhs: BigInt4) -> (res: BigInt4):
-    let (res, borrow) = sub_inner(lhs.d0, lhs.d1, lhs.d2, lhs.d3, 0, rhs.d0, rhs.d1, rhs.d2. rhs.d3, 0)
+func sub{range_check_ptr,bitwise_ptr:BitwiseBuiltin*}(lhs: BigInt4, rhs: BigInt4) -> (res: BigInt4):
+    let (res, borrow) = sub_inner(lhs.d0, lhs.d1, lhs.d2, lhs.d3, 0, rhs.d0, rhs.d1, rhs.d2, rhs.d3, 0)
     return (res=res)
 end
 
 # Returns lhs * rhs mod p
-func mul{range_check_ptr}(lhs: BigInt4, rhs: BigInt4) -> (res: BigInt4):
+func mul{range_check_ptr,bitwise_ptr:BitwiseBuiltin*}(lhs: BigInt4, rhs: BigInt4) -> (res: BigInt4):
     # Schoolbook multiplication.
     let (w0, carry) = mac(0, lhs.d0, rhs.d0, 0)
     let (w1, carry) = mac(0, lhs.d0, rhs.d1, carry)
@@ -185,4 +185,11 @@ end
 func double{range_check_ptr}(fe: BigInt4) -> (res: BigInt4):
     let (res) = add(fe, fe)
     return (res)
+end
+
+# output
+func out_canonical{output_ptr,range_check_ptr,bitwise_ptr:BitwiseBuiltin*}(m: BigInt4):
+    let (cm) = to_canonical(m)
+    out_bigInt4(cm)
+    return ()
 end
