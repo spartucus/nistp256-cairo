@@ -176,13 +176,13 @@ func to_montgomery{range_check_ptr,bitwise_ptr:BitwiseBuiltin*}(fe: BigInt4) -> 
 end
 
 # Returns res = fe^2 mod p
-func square{range_check_ptr}(fe: BigInt4) -> (res: BigInt4):
+func square{range_check_ptr,bitwise_ptr:BitwiseBuiltin*}(fe: BigInt4) -> (res: BigInt4):
     let (res) = mul(fe, fe)
     return (res)
 end
 
 # Returns res = 2**fe mod p
-func double{range_check_ptr}(fe: BigInt4) -> (res: BigInt4):
+func double{range_check_ptr,bitwise_ptr:BitwiseBuiltin*}(fe: BigInt4) -> (res: BigInt4):
     let (res) = add(fe, fe)
     return (res)
 end

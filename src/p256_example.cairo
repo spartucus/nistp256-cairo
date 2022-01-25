@@ -3,25 +3,13 @@ from starkware.cairo.common.serialize import serialize_word
 from bigint import BigInt4, bigint_zero, bigint_one, bigint_MODULUS, out_bigInt4
 from p256_filed import add, to_canonical, mul, sub, out_canonical, to_montgomery,div_mod
 from starkware.cairo.common.cairo_builtins import BitwiseBuiltin
+from p256_projective import GENERATOR, ec_add, ec_mul, reqular_EcPoint
 
 func main{output_ptr,range_check_ptr,bitwise_ptr:BitwiseBuiltin*}():
-    let (one) = bigint_one()
-    let (two) = add(one,one)
-    #out_canonical(two)
-    let (four) = mul(two,two)
-    #out_canonical(four)
+    %{
+        print(1)
+    %}
     let (p) = bigint_MODULUS()
-    
-    let (mone) = sub(p,one)
-    #out_canonical(mone)
-    let (mtwo) = sub(p,two)
-    #out_canonical(mtwo)
-    let (mmtwo) = mul(mtwo,mtwo)
-    #out_canonical(mmtwo)
-
-
-
-
     let cx = BigInt4(
         d0=0xf4a13945d898c296,
         d1=0x77037d812deb33a0,
@@ -51,21 +39,43 @@ func main{output_ptr,range_check_ptr,bitwise_ptr:BitwiseBuiltin*}():
     let (a) = to_montgomery(ca)
     let (b) = to_montgomery(cb)
     let (yy) = mul(y,y)
-    #out_canonical(yy)
+    #out_canonical(yy)  
     let (xx) = mul(x,x)
     let (xxx) = mul(xx,x)
     let (ax) = mul(a,x)
     let (res) = add(xxx,ax)
     let (res) = add(res,b)
     #out_canonical(res)
-    #yy == res
+    ##test basic field 
+    #yy == res   y^2=x^3+ax+b
 
     let (step1) = div_mod(yy,x,p)  # y^2/x
     let (step2) = div_mod(b,x,p)       # b/x
     let (step3) = add(xx,a)       # (x^2+a)R
     let (step4) = sub(step1,step2) # y^2/x-b/x
+    
+    
     out_bigInt4(step4)
     out_canonical(step3)
+    ##test div_mod
     # step4 == step3
+
+
+
+    let (G) = GENERATOR()
+    let (G1) = ec_mul(G,step1)
+    
+    #let (G) = GENERATOR()
+    #out_bigInt4(step5)
+    #let (G2) = ec_mul(G,scalar=step2)
+
+    #let (G) = GENERATOR()
+    #let (G4) = ec_mul(G,step4)
+    #let (G5) = ec_add(G2,G4)
+
+    #let (R1) = reqular_EcPoint(G1)
+    #out_bigInt4(R1.x)
+    #let (R5) = reqular_EcPoint(G5)
+    #out_EcPoint(R5)
     return ()
 end

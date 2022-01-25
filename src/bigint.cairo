@@ -50,13 +50,24 @@ func bigint_MODULUS() -> (res: BigInt4):
 end
 
 # b = 0x5AC635D8AA3A93E7B3EBBD55769886BC651D06B0CC53B0F63BCE3C3E27D2604B
-func CURVE_EQUATION_B() -> (BigInt4):
+func CURVE_EQUATION_B() -> (res:BigInt4):
     return (
         BigInt4(
         d0=0xd89cdf6229c4bddf,
         d1=0xacf005cd78843090,
         d2=0xe5a220abf7212ed6,
         d3=0xdc30061d04874834
+        )
+    )
+end
+
+func CURVE_ORDER_N() -> (BigInt4):
+    return (
+        BigInt4(
+        d0=0xF3B9CAC2FC632551,
+        d1=0xBCE6FAADA7179E84,
+        d2=0xFFFFFFFFFFFFFFFF,
+        d3=0xFFFFFFFF00000000
         )
     )
 end
