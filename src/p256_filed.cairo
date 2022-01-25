@@ -187,6 +187,49 @@ func double{range_check_ptr}(fe: BigInt4) -> (res: BigInt4):
     return (res)
 end
 
+
+#Finds a nonnegative integer res < p such that (m * res) % p == n.
+##TODO
+##need range check?
+func div_mod{range_check_ptr}(n:BigInt4, m:BigInt4, p:BigInt4) -> (res:BigInt4):
+    alloc_locals
+    local d0 
+    local d1
+    local d2 
+    local d3
+    %{
+        from starkware.python.math_utils import div_mod
+        pn = ids.n.d0 + ids.n.d1 * 2**64 + ids.n.d2 * 2**128 + ids.n.d3 * 2**192
+        pm = ids.m.d0 + ids.m.d1 * 2**64 + ids.m.d2 * 2**128 + ids.m.d3 * 2**192
+        pp = ids.p.d0 + ids.p.d1 * 2**64 + ids.p.d2 * 2**128 + ids.p.d3 * 2**192
+        value = px = div_mod(pn,pm,pp)
+        ids.d3 = value // 2**192
+        ids.d2 = (value - ids.d3*2**192) // 2**128
+        ids.d1 = (value - ids.d3*2**192 - ids.d2*2**128) //2**64
+        ids.d0 = value - ids.d3*2**192 - ids.d2*2**128 - ids.d1*2**64  
+    %}
+    # Check that 0 <= d0 < 2**64
+    #[range_check_ptr] = d0
+    #assert [range_check_ptr + 1] = BASE - 1 - d0
+
+    # Check that 0 <= d1 < 2**64
+    #[range_check_ptr + 2] = d1
+    #assert [range_check_ptr + 3] = BASE - 1 - d1
+
+    # Check that 0 <= d2 < 2**64
+    #[range_check_ptr + 4] = d2
+    #assert [range_check_ptr + 5] = BASE - 1 - d2
+
+    # Check that 0 <= d3 < 2**64
+    #[range_check_ptr + 6] = d3
+    #assert [range_check_ptr + 7] = BASE - 1 - d3
+
+    let res = BigInt4(d0,d1,d2,d3)
+    return (res=res)
+end
+
+
+
 # output
 func out_canonical{output_ptr,range_check_ptr,bitwise_ptr:BitwiseBuiltin*}(m: BigInt4):
     let (cm) = to_canonical(m)

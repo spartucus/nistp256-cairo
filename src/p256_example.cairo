@@ -1,7 +1,7 @@
 %builtins  output range_check bitwise
 from starkware.cairo.common.serialize import serialize_word
-from bigint import BigInt4, bigint_zero, bigint_one, bigint_MODULUS
-from p256_filed import add, to_canonical, mul, sub, out_canonical, to_montgomery
+from bigint import BigInt4, bigint_zero, bigint_one, bigint_MODULUS, out_bigInt4
+from p256_filed import add, to_canonical, mul, sub, out_canonical, to_montgomery,div_mod
 from starkware.cairo.common.cairo_builtins import BitwiseBuiltin
 
 func main{output_ptr,range_check_ptr,bitwise_ptr:BitwiseBuiltin*}():
@@ -13,11 +13,11 @@ func main{output_ptr,range_check_ptr,bitwise_ptr:BitwiseBuiltin*}():
     let (p) = bigint_MODULUS()
     
     let (mone) = sub(p,one)
-    out_canonical(mone)
+    #out_canonical(mone)
     let (mtwo) = sub(p,two)
-    out_canonical(mtwo)
+    #out_canonical(mtwo)
     let (mmtwo) = mul(mtwo,mtwo)
-    out_canonical(mmtwo)
+    #out_canonical(mmtwo)
 
 
 
@@ -51,13 +51,21 @@ func main{output_ptr,range_check_ptr,bitwise_ptr:BitwiseBuiltin*}():
     let (a) = to_montgomery(ca)
     let (b) = to_montgomery(cb)
     let (yy) = mul(y,y)
-    out_canonical(yy)
+    #out_canonical(yy)
     let (xx) = mul(x,x)
     let (xxx) = mul(xx,x)
     let (ax) = mul(a,x)
     let (res) = add(xxx,ax)
     let (res) = add(res,b)
-    out_canonical(res)
+    #out_canonical(res)
+    #yy == res
 
+    let (step1) = div_mod(yy,x,p)  # y^2/x
+    let (step2) = div_mod(b,x,p)       # b/x
+    let (step3) = add(xx,a)       # (x^2+a)R
+    let (step4) = sub(step1,step2) # y^2/x-b/x
+    out_bigInt4(step4)
+    out_canonical(step3)
+    # step4 == step3
     return ()
 end
