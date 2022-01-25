@@ -34,12 +34,12 @@ func bigint_one() -> (res: BigInt4):
         d1=0xffffffff00000000,
         d2=0xffffffffffffffff,
         d3=0x00000000fffffffe,
-        ))
+    ))
 end
 
 # Constant representing the modulus
 # p = 2^{224}(2^{32} − 1) + 2^{192} + 2^{96} − 1
-func MODULUS() -> (res: BigInt4):
+func bigint_MODULUS() -> (res: BigInt4):
     return (
         BigInt4(
         d0=0xffffffffffffffff,
@@ -59,4 +59,11 @@ func CURVE_EQUATION_B() -> (BigInt4):
         d3=0xdc30061d04874834
         )
     )
+end
+
+func out_bigInt4{output_ptr}(a: BigInt4):
+    let output = cast(output_ptr, BigInt4*)
+    assert [output] = a
+    let output_ptr = output_ptr + BigInt4.SIZE
+    return ()
 end

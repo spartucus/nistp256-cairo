@@ -1,25 +1,24 @@
-%builtins range_check
-
-from bigint import BASE, BigInt4, MODULUS, bigint_zero, bigint_one
+from bigint import BASE, BigInt4, bigint_MODULUS, bigint_zero, bigint_one, out_bigInt4
 from utils import adc, sbb, mac
 from starkware.cairo.common.bitwise import bitwise_and
+from starkware.cairo.common.cairo_builtins import BitwiseBuiltin
 
-func sub_inner{range_check_ptr}(l0, l1, l2, l3, l4, r0, r1, r2, r3, r4) -> (res:BigInt4, borrow):
+func sub_inner{range_check_ptr,bitwise_ptr:BitwiseBuiltin*}(l0, l1, l2, l3, l4, r0, r1, r2, r3, r4) -> (res:BigInt4, borrow):
     let (w0, borrow) = sbb(l0, r0, 0)
     let (w1, borrow) = sbb(l1, r1, borrow)
     let (w2, borrow) = sbb(l2, r2, borrow)
     let (w3, borrow) = sbb(l3, r3, borrow)
     let (w4, borrow) = sbb(l4, r4, borrow)
 
-    let (MODULUS) = MODULUS()
+    let (MODULUS) = bigint_MODULUS()
     let (ba0) = bitwise_and(MODULUS.d0, borrow)
     let (ba1) = bitwise_and(MODULUS.d1, borrow)
     let (ba2) = bitwise_and(MODULUS.d2, borrow)
     let (ba3) = bitwise_and(MODULUS.d3, borrow)
-    let (w0, carry) = adc(w0, ba0, 0);
-    let (w1, carry) = adc(w1, ba1, carry);
-    let (w2, carry) = adc(w2, ba2, carry);
-    let (w3, carry) = adc(w3, ba3, carry);
+    let (w0, carry) = adc(w0, ba0, 0)
+    let (w1, carry) = adc(w1, ba1, carry)
+    let (w2, carry) = adc(w2, ba2, carry)
+    let (w3, carry) = adc(w3, ba3, carry)
 
     return (
         res=BigInt4(
@@ -69,8 +68,8 @@ end
     # - Efficient and Secure Elliptic Curve Cryptography Implementation of Curve P-256
     #   Algorithm 7) Montgomery Word-by-Word Reduction
     #   https://csrc.nist.gov/csrc/media/events/workshop-on-elliptic-curve-cryptography-standards/documents/papers/session6-adalier-mehmet.pdf
-func montgomery_reduce{range_check_ptr}(r0, r1, r2, r3, r4, r5, r6, r7) -> (res: BigInt4):
-    let (MODULUS) = MODULUS()
+func montgomery_reduce{range_check_ptr,bitwise_ptr:BitwiseBuiltin*}(r0, r1, r2, r3, r4, r5, r6, r7) -> (res: BigInt4):
+    let (MODULUS) = bigint_MODULUS()
     let (r1, carry) = mac(r1, r0, MODULUS.d1, r0)
     let (r2, carry) = adc(r2, 0, carry)
     let (r3, carry) = mac(r3, r0, MODULUS.d3, carry)
@@ -91,21 +90,22 @@ func montgomery_reduce{range_check_ptr}(r0, r1, r2, r3, r4, r5, r6, r7) -> (res:
     let (r6, carry) = mac(r6, r3, MODULUS.d3, carry)
     let (r7, r8) = adc(r7, carry2, carry)
 
-    let (res, borrow) = sub_inner(r4, r5, r6, r7, r8, MODULUS[0], MODULUS.d1, MODULUS[2], MODULUS.d3, 0)
+    let (res, borrow) = sub_inner(r4, r5, r6, r7, r8, MODULUS.d0, MODULUS.d1, MODULUS.d2, MODULUS.d3, 0)
     return (res=res)
 end
 
 # Returns lhs + rhs mod p
-func add{range_check_ptr}(lhs: BigInt4, rhs: BigInt4) -> (res: BigInt4):
-    let (MODULUS) = MODULUS()
+func add{range_check_ptr,bitwise_ptr:BitwiseBuiltin*}(lhs: BigInt4, rhs: BigInt4) -> (res: BigInt4):
+    let (MODULUS) = bigint_MODULUS()
     # Bit 256 of p is set, so addition can result in five words.
     let (w0, carry) = adc(lhs.d0, rhs.d0, 0)
-    let (w1, carry) = adc(lhs.d1, rhs,d1, carry)
+    let (w1, carry) = adc(lhs.d1, rhs.d1, carry)
     let (w2, carry) = adc(lhs.d2, rhs.d2, carry)
     let (w3, w4) = adc(lhs.d3, rhs.d3, carry)
 
     # Attempt to subtract the modulus, to ensure the result is in the field.
     let (res, borrow) = sub_inner(w0, w1, w2, w3, w4, MODULUS.d0, MODULUS.d1, MODULUS.d2, MODULUS.d3, 0)
+    #out_bigInt4(res)
     return (res=res)
 end
 
@@ -143,7 +143,7 @@ func mul{range_check_ptr}(lhs: BigInt4, rhs: BigInt4) -> (res: BigInt4):
 end
 
 # Returns 1 if fe == 0 (mod secp256r1_prime), and 0 otherwise.
-func is_zero{range_check_ptr}(fe : BigInt3) -> (res : felt):
+func is_zero{range_check_ptr}(fe : BigInt4) -> (res : felt):
     let (zero) = bigint_zero()
     alloc_locals
     local res
@@ -157,12 +157,13 @@ func is_zero{range_check_ptr}(fe : BigInt3) -> (res : felt):
 end
 
 # Translate a field element out of the Montgomery domain.
-func to_canonical{range_check_ptr}(fe: BigInt4) -> (res: BigInt4):
+func to_canonical{range_check_ptr,bitwise_ptr:BitwiseBuiltin*}(fe: BigInt4) -> (res: BigInt4):
     let (res) = montgomery_reduce(fe.d0, fe.d1, fe.d2, fe.d3, 0, 0, 0, 0)
+    return (res = res)
 end
 
 # Translate a field element into the Montgomery domain.
-func to_montgomery{range_check_ptr}(fe: BigInt4) -> (res: BigInt4):
+func to_montgomery{range_check_ptr,bitwise_ptr:BitwiseBuiltin*}(fe: BigInt4) -> (res: BigInt4):
     let R2 = BigInt4(
         d0=0x0000000000000003,
         d1=0xfffffffbffffffff,

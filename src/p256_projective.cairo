@@ -1,6 +1,4 @@
-%builtins range_check
-
-from bigint import BASE, BigInt4, MODULUS, CURVE_EQUATION_B, bigint_zero, bigint_one
+from bigint import BASE, BigInt4, bigint_MODULUS, CURVE_EQUATION_B, bigint_zero, bigint_one
 from utils import adc, sbb, mac
 from starkware.cairo.common.bitwise import bitwise_and
 from p256_field import mul as field_mul
