@@ -1,6 +1,13 @@
 # The base of the representation.
 const BASE = 2 ** 64
 
+# n = 0xffffffff00000000ffffffffffffffffbce6faada7179e84f3b9cac2fc632551
+# n = N0 + BASE * N1 + BASE**2 * N2 + BASE**3 * N3
+const N0 = 0xf3b9cac2fc632551
+const N1 = 0xbce6faada7179e84
+const N2 = 0xffffffffffffffff
+const N3 = 0xffffffff00000000
+
 # Represents an integer defined by
 #   d0 + BASE * d1 + BASE**2 * d2 + BASE**3 * d3.
 # Note that d0, d1, d2, d3 must be in the range [0, BASE).
@@ -70,6 +77,26 @@ func CURVE_ORDER_N() -> (BigInt4):
         d3=0xFFFFFFFF00000000
         )
     )
+end
+
+func nondet_bigint4{range_check_ptr}() -> (res : BigInt4):
+    # The result should be at the end of the stack after the function returns.
+    let res : BigInt4 = [cast(ap + 5, BigInt4*)]
+    %{
+        from starkware.cairo.common.cairo_secp.secp_utils import split
+        segments.write_arg(ids.res.address_, split(value))
+    %}
+    # The maximal possible sum of the limbs, assuming each of them is in the range [0, BASE).
+    const MAX_SUM = 4 * (BASE - 1)
+    assert [range_check_ptr] = MAX_SUM - (res.d0 + res.d1 + res.d2 + res.d3)
+
+    # Prepare the result at the end of the stack.
+    tempvar range_check_ptr = range_check_ptr + 4
+    [range_check_ptr - 3] = res.d0; ap++
+    [range_check_ptr - 2] = res.d1; ap++
+    [range_check_ptr - 1] = res.d2; ap++
+    static_assert &res + BigInt3.SIZE == ap
+    return (res=res)
 end
 
 func out_bigInt4{output_ptr}(a: BigInt4):
