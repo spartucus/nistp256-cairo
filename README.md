@@ -2,6 +2,9 @@
 A cairo implementation of NIST P-256.
 
 ## implementation notes
+### Outsourcing computing
+we use python to compute the complex field computing, and verify the correctness in cairo
+
 ### Montgomery Reduction
 Montgomery reduction is a technique which allows efficient implementation of modular
 multiplication.
