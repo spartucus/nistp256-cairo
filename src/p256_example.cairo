@@ -11,17 +11,6 @@ func main{range_check_ptr}():
     let r = BigInt3(0x155a7acabb5e6f79c8c2ac,0xf598a549fb4abf5ac7da9,0xf3ac8061b514795b8843e)
     let s = BigInt3(0x2f175a3ccdda2acc058903,0x1898afdcdc73be5ec863a5,0x8bf77819ca05a6b2786c7)
     let msg_hash = BigInt3(0x100377dbc4e7a6a133ec56,0x25c813f825413878bbec6a,0x44acf6b7e36c1342c2c58)
-    %{
-        print("p256_ecdsa_verify is coming")
-        import time 
-        start = time.time()
-    %}
     verify_ecdsa(public_key_pt=public_key_pt, msg_hash=msg_hash, r=r, s=s)
-    %{
-        import time
-        end = time.time()
-        print(end - start)
-        print("p256_ecdsa_verify is done")
-    %}
     return ()
 end

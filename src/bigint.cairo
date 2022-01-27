@@ -5,7 +5,7 @@ const BASE = 2 ** 86
 #   d0 + BASE * d1 + BASE**2 * d2.
 # Note that the limbs (d_i) are NOT restricted to the range [0, BASE) and in particular they
 # can be negative.
-# In most cases this is used to represent a secp256k1 field element.
+# In most cases this is used to represent a secp256r1 field element.
 struct UnreducedBigInt3:
     member d0 : felt
     member d1 : felt
@@ -13,7 +13,7 @@ struct UnreducedBigInt3:
 end
 
 # Same as UnreducedBigInt3, except that d0, d1 and d2 must be in the range [0, 3 * BASE).
-# In most cases this is used to represent a secp256k1 field element.
+# In most cases this is used to represent a secp256r1 field element.
 struct BigInt3:
     member d0 : felt
     member d1 : felt

@@ -47,7 +47,7 @@ end
 
 # Returns the slope of the line connecting the two given points.
 # The slope is used to compute pt0 + pt1.
-# Assumption: pt0.x != pt1.x (mod secp256k1_prime).
+# Assumption: pt0.x != pt1.x (mod secp256r1_prime).
 func compute_slope{range_check_ptr}(pt0 : EcPoint, pt1 : EcPoint) -> (slope : BigInt3):
     
     let P = BigInt3(P0, P1, P2)

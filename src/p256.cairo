@@ -82,7 +82,7 @@ func validate_signature_entry{range_check_ptr}(val : BigInt3):
     return ()
 end
 
-# Verifies a Secp256k1 ECDSA signature.
+# Verifies a Secp256R1 ECDSA signature.
 # Soundness assumptions:
 # * public_key_pt is on the curve.
 # * All the limbs of public_key_pt.x, public_key_pt.y, msg_hash are in the range [0, 3 * BASE).
