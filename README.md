@@ -3,11 +3,10 @@ A cairo implementation of NIST P-256(AKA Secp256R1).
 
 ## implementation notes
 ### Outsourcing computing
-we use python to compute the complex field computing, and verify the correctness in cairo
+We use python to compute the complex field computing, and verify the correctness in cairo. Start from `src/p256_example.cairo`.
 
 ### Montgomery Reduction
-Montgomery reduction is a technique which allows efficient implementation of modular
-multiplication.
+Montgomery reduction is a technique which allows efficient implementation of modular multiplication.
 
 For short, montgomery reduction ![](http://latex.codecogs.com/gif.latex?REDC(x)=xR^{-1}\mod{P}) where  ![](http://latex.codecogs.com/gif.latex?R=2^{256}\mod{P}) and ![](https://latex.codecogs.com/gif.latex?0\leq{x}<RP).
 
@@ -37,7 +36,8 @@ In addition, we have Jacobi projective coordinates ![](http://latex.codecogs.com
 
 ![](http://latex.codecogs.com/gif.latex?(X/Z^2,Y/Z^3)<=(X,Y,Z))
 
-###ECDSA-Verify in Projective coordinates
+### ECDSA-Verify in Projective coordinates
+
 For a signature  ![](http://latex.codecogs.com/gif.latex?(r,s)), pubkey ![](http://latex.codecogs.com/gif.latex?P), base point ![](http://latex.codecogs.com/gif.latex?G)  and msg hash ![](http://latex.codecogs.com/gif.latex?m), we have to verify that: ![](http://latex.codecogs.com/gif.latex?(x,y,z)=r^{-1}sG+r^{-1}mP) and if ![](http://latex.codecogs.com/gif.latex?r*z=x\mod{P}) or ![](http://latex.codecogs.com/gif.latex?(r+n)*z=x\mod{P})
 
 In this form, we avoid division method.

@@ -8,8 +8,6 @@ func verify_urbigInt5_zero{range_check_ptr}(val : UnreducedBigInt5, n : BigInt3)
     %{
         from starkware.cairo.common.cairo_secp.secp_utils import pack
         n = pack(ids.n, PRIME)
-        #if ( ids.v3 < PRIME//2){v3 = ids.val.v3 }else{ v3 = PRIME-ids.val.v3}
-        #if ( ids.v4 < PRIME//2){v4 = ids.val.v4 }else{ v4 = PRIME-ids.val.v4}
         v3 = ids.val.d3 if ids.val.d3 < PRIME//2 else ids.val.d3 - PRIME
         v4 = ids.val.d4 if ids.val.d4 < PRIME//2 else ids.val.d4 - PRIME
         v = pack(ids.val, PRIME) + v3*2**258 + v4*2**344
