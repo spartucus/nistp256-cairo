@@ -20,7 +20,6 @@ func mul_s_inv{range_check_ptr}(x : BigInt3, s : BigInt3, N : BigInt3) -> (res :
         from starkware.cairo.common.cairo_secp.secp_utils import pack
         from starkware.python.math_utils import div_mod, safe_div
 
-        #N = 0xfffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141
         n = pack(ids.N, PRIME)
         x = pack(ids.x, PRIME) % n
         s = pack(ids.s, PRIME) % n

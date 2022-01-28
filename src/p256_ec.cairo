@@ -1,6 +1,7 @@
 from bigint import BigInt3, UnreducedBigInt3, UnreducedBigInt5, nondet_bigint3, bigint_mul
 from p256_field import verify_urbigInt3_zero, verify_urbigInt5_zero, is_urbigInt3_zero
 from p256_def import P0, P1, P2, N0, N1, N2
+
 # Represents a point on the elliptic curve.
 # The zero point is represented using pt.x=0, as there is no point on the curve with this x value.
 struct EcPoint:
@@ -15,7 +16,7 @@ func compute_doubling_slope{range_check_ptr}(pt : EcPoint) -> (slope : BigInt3):
     # Note that y cannot be zero: assume that it is, then pt = -pt, so 2 * pt = 0, which
     # contradicts the fact that the size of the curve is odd.
     
-    let P = BigInt3(P0,P1,P2)
+    let P = BigInt3(P0, P1, P2)
     %{
         from starkware.cairo.common.cairo_secp.secp_utils import pack
         from starkware.python.math_utils import div_mod
@@ -26,7 +27,7 @@ func compute_doubling_slope{range_check_ptr}(pt : EcPoint) -> (slope : BigInt3):
         
         y = pack(ids.pt.y, PRIME)
         
-        value = slope = div_mod(3 * x ** 2 -3, 2 * y, p)
+        value = slope = div_mod(3 * x ** 2 - 3, 2 * y, p)
         
     %}
     let (slope : BigInt3) = nondet_bigint3()
@@ -73,7 +74,7 @@ func compute_slope{range_check_ptr}(pt0 : EcPoint, pt1 : EcPoint) -> (slope : Bi
         d1=x_diff_slope.d1 - pt0.y.d1 + pt1.y.d1,
         d2=x_diff_slope.d2 - pt0.y.d2 + pt1.y.d2,
         d3=x_diff_slope.d3,
-        d4=x_diff_slope.d4,),P)
+        d4=x_diff_slope.d4,), P)
 
     return (slope)
 end
@@ -91,7 +92,7 @@ func ec_double{range_check_ptr}(pt : EcPoint) -> (res : EcPoint):
     
     let P = BigInt3(P0, P1, P2)
     let (slope : BigInt3) = compute_doubling_slope(pt)
-    let (slope_sqr : UnreducedBigInt5) = bigint_mul(slope,slope)
+    let (slope_sqr : UnreducedBigInt5) = bigint_mul(slope, slope)
     
     %{
         from starkware.cairo.common.cairo_secp.secp_utils import pack
@@ -115,7 +116,7 @@ func ec_double{range_check_ptr}(pt : EcPoint) -> (res : EcPoint):
         d1=slope_sqr.d1 - new_x.d1 - 2 * pt.x.d1,
         d2=slope_sqr.d2 - new_x.d2 - 2 * pt.x.d2,
         d3=slope_sqr.d3,
-        d4=slope_sqr.d4),P)
+        d4=slope_sqr.d4), P)
 
     let (x_diff_slope : UnreducedBigInt5) = bigint_mul(
         BigInt3(d0=pt.x.d0 - new_x.d0, d1=pt.x.d1 - new_x.d1, d2=pt.x.d2 - new_x.d2), slope)
@@ -126,7 +127,7 @@ func ec_double{range_check_ptr}(pt : EcPoint) -> (res : EcPoint):
         d1=x_diff_slope.d1 - pt.y.d1 - new_y.d1,
         d2=x_diff_slope.d2 - pt.y.d2 - new_y.d2,
         d3=x_diff_slope.d3 ,
-        d4=x_diff_slope.d4 ),P)
+        d4=x_diff_slope.d4 ), P)
 
     return (EcPoint(new_x, new_y))
 end
@@ -153,7 +154,7 @@ func fast_ec_add{range_check_ptr}(pt0 : EcPoint, pt1 : EcPoint) -> (res : EcPoin
     end
     let P = BigInt3(P0,P1,P2)
     let (slope : BigInt3) = compute_slope(pt0, pt1)
-    let (slope_sqr : UnreducedBigInt5) = bigint_mul(slope,slope)
+    let (slope_sqr : UnreducedBigInt5) = bigint_mul(slope, slope)
     
     %{
         from starkware.cairo.common.cairo_secp.secp_utils import  pack
@@ -187,7 +188,7 @@ func fast_ec_add{range_check_ptr}(pt0 : EcPoint, pt1 : EcPoint) -> (res : EcPoin
         d1=x_diff_slope.d1 - pt0.y.d1 - new_y.d1,
         d2=x_diff_slope.d2 - pt0.y.d2 - new_y.d2,
         d3=x_diff_slope.d3,
-        d4=x_diff_slope.d4),P)
+        d4=x_diff_slope.d4), P)
 
     return (EcPoint(new_x, new_y))
 end
@@ -197,7 +198,7 @@ func ec_add{range_check_ptr}(pt0 : EcPoint, pt1 : EcPoint) -> (res : EcPoint):
     
     let P = BigInt3(P0, P1, P2)
     let x_diff = BigInt3(d0=pt0.x.d0 - pt1.x.d0, d1=pt0.x.d1 - pt1.x.d1, d2=pt0.x.d2 - pt1.x.d2)
-    let (same_x : felt) = is_urbigInt3_zero(x_diff,P)
+    let (same_x : felt) = is_urbigInt3_zero(x_diff, P)
     if same_x == 0:
         # pt0.x != pt1.x so we can use fast_ec_add.
         return fast_ec_add(pt0, pt1)
@@ -250,8 +251,6 @@ end
 
 func ec_mul{range_check_ptr}(pt : EcPoint, scalar : BigInt3) -> (res : EcPoint):
     alloc_locals
-    
-    let P = BigInt3(P0, P1, P2)
     let (pow2_0 : EcPoint, local res0 : EcPoint) = ec_mul_inner(pt, scalar.d0, 86)
     let (pow2_1 : EcPoint, local res1 : EcPoint) = ec_mul_inner(pow2_0, scalar.d1, 86)
     let (_, local res2 : EcPoint) = ec_mul_inner(pow2_1, scalar.d2, 84)

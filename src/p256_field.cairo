@@ -43,7 +43,7 @@ func verify_urbigInt5_zero{range_check_ptr}(val : UnreducedBigInt5, n : BigInt3)
 end
 
 func verify_urbigInt3_zero{range_check_ptr}(val : UnreducedBigInt3, n : BigInt3):
-    verify_urbigInt5_zero(UnreducedBigInt5(d0=val.d0, d1=val.d1, d2=val.d2, 0, 0),n)
+    verify_urbigInt5_zero(UnreducedBigInt5(d0=val.d0, d1=val.d1, d2=val.d2, 0, 0), n)
     return ()
 end
 
@@ -72,6 +72,6 @@ func is_urbigInt3_zero{range_check_ptr}(x : BigInt3, n : BigInt3) -> (res : felt
         d1=x_x_inv.d1,
         d2=x_x_inv.d2,
         d3=x_x_inv.d3,
-        d4=x_x_inv.d4),n)
+        d4=x_x_inv.d4), n)
     return (res=0)
 end
